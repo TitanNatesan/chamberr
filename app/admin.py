@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import AdminUser, Form
+from rest_framework.authtoken.admin import TokenAdmin
 
+TokenAdmin.raw_id_fields = ['user']
 class AdminUserAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'admin_type']
 
@@ -12,10 +14,5 @@ class AdminUserAdmin(admin.ModelAdmin):
 @admin.register(Form)
 class FormAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Form._meta.fields]
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        filtered_data = qs.filter(form_status='pending')  # Filter directly on queryset
-        return filtered_data
     
 admin.site.register(AdminUser, AdminUserAdmin)

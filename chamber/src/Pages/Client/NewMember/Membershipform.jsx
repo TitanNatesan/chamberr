@@ -3,11 +3,15 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../../Assets/Formheader.png";
 import icci from "../../../Assets/Formheader.png";
 import axios from "axios";
+import { faker } from '@faker-js/faker';
+
 
 const Membershipform = () => {
   const navigate = useNavigate();
   const currentDate = new Date().toLocaleDateString();
   const currentYear = new Date().getFullYear();
+  const [checkedItems, setCheckedItems] = useState({});
+  const [files, setFiles] = useState({});
   const [image, setImage] = useState(null);
   const [isMember, setIsMember] = useState(false);
   const [isYesChecked, setIsYesChecked] = useState(false);
@@ -17,68 +21,73 @@ const Membershipform = () => {
     setIsYesChecked(event.target.checked);
   };
 
-  const [formData, setFormData] = useState({
-    NameofApplicant: "John Doe",
-    constitution: "Individual",
-    profession1: "Software Developer",
-    YearofEstablishment: "2010",
-    Businessactivity: "Software Development and Consulting",
-    Registerofficeaddress: "1234 Software St, Tech City",
-    Addressforcommunication_office: "1234 Software St, Tech City",
-    Addressforcommunication_work: "5678 Development Ave, Tech Park",
-    Communicationdetails_landline: "123-456-7890",
-    Communicationdetails_mobile: "098-765-4321",
-    Communicationdetails_email: "contact@techcompany.com",
-    Communicationdetails_web: "https://www.techcompany.com",
-    Legalinfo_aadhar: "123456789101",
-    Legalinfo_pancard: "ABCDE1234F",
-    Legalinfo_GSTNo: "22AAAAA0000A1Z5",
-    Legalinfo_CompanyFirmRegNo: "C12345678901234",
-    Legalinfo_SocietyAssociationRegNo: "12345678901234",
-    Personauthorized_Name: "Jane Doe",
-    Personauthorized_Designation: "CTO",
-    personauthorized_pan: "BCDEA1234G",
-    personauthorized_aadhar: "432167890123",
-    personauthorized_phone: "098-765-4321",
-    personauthorized_email: "jane.doe@techcompany.com",
-    Maincategory: "IT and Software",
-    Subcategory: "Software Development",
-    Cateringtomarket: "Global",
-    Percentageofimports: "10%",
-    Percentageofexports: "50%",
-    Foreigncollaboration_country: "USA",
-    Foreigncollaboration_collaborator: "GlobalTech Inc",
-    Classificationofindustry: "Large",
-    Annualturnover_year1: "10",
-    Annualturnover_year2: "1200000",
-    Annualturnover_year3: "150",
-    Noofpersonsemployed_direct: "50",
-    Noofpersonsemployed_works: "200",
-    Noofpersonsemployed_indirect: "100",
-    Noofpersonsemployed_outsourced: "30",
-    ESIC: "Yes",
-    EPF: "Yes",
-    Detailsofbranches: "Tech City, Tech Park",
-    Memberofanyother: "Yes",
-    association_name: "Tech Industry Association",
-    is_office_bearer: "No",
-    association_position: "",
-    reason_for_joining_chamber: "Networking and Business Opportunities",
-    e_sign: null,
-    IncomeandExpenditure: null,
-    incometaxtpan: null,
-    FactoryRegistrationCertificate: null,
-    MemorandumArticleofAssociation: null,
-    GSTINRegistrationCopy: null,
-    IECodeCertificate: null,
-    ProfessionalCertificate: null,
-    CopyofLandDocument: null,
-    LandHolding: null,
-    passportsizephoto: null,
-    DirectorsPartners: null,
-    form_status: "pending",
-    Reasonforrejection: "",
-  });
+  const generateFakeData = () => {
+    return {
+      NameofApplicant: faker.person.fullName(),
+      constitution: "Individual",
+      profession1: faker.person.jobTitle(),
+      YearofEstablishment: faker.date.past().getFullYear().toString(), // last 20 years
+      Businessactivity: faker.company.catchPhrase(),
+      Registerofficeaddress: faker.location.streetAddress(),
+      Addressforcommunication_office: faker.location.streetAddress(),
+      Addressforcommunication_work: faker.location.streetAddress(),
+      Communicationdetails_landline: faker.phone.number(),
+      Communicationdetails_mobile: faker.phone.number("+91##########"),
+      Communicationdetails_email: faker.internet.email(),
+      Communicationdetails_web: faker.internet.url(),
+      Legalinfo_aadhar: faker.string.alphanumeric(12),
+      Legalinfo_pancard: faker.string.alphanumeric(10).toUpperCase(),
+      Legalinfo_GSTNo: faker.string.alphanumeric(15).toUpperCase(),
+      Legalinfo_CompanyFirmRegNo: faker.string.alphanumeric(15),
+      Legalinfo_SocietyAssociationRegNo: faker.string.alphanumeric(15),
+      Personauthorized_Name: faker.person.fullName(),
+      Personauthorized_Designation: faker.person.jobTitle(),
+      personauthorized_pan: faker.string.alphanumeric(10).toUpperCase(),
+      personauthorized_aadhar: faker.string.alphanumeric(12),
+      personauthorized_phone: faker.phone.number("+91##########"),
+      personauthorized_email: faker.internet.email(),
+      Maincategory: "IT and Software",
+      Subcategory: "Software Development",
+      Cateringtomarket: "Global",
+      Percentageofimports: "10%",
+      Percentageofexports: "50%",
+      Foreigncollaboration_country: faker.location.country(),
+      Foreigncollaboration_collaborator: faker.company.name(),
+      Classificationofindustry: "Large",
+      Annualturnover_year1: faker.finance.amount(),
+      Annualturnover_year2: faker.finance.amount(),
+      Annualturnover_year3: faker.finance.amount(),
+      Noofpersonsemployed_direct: faker.number.int(),
+      Noofpersonsemployed_works: faker.number.int(),
+      Noofpersonsemployed_indirect: faker.number.int(),
+      Noofpersonsemployed_outsourced: faker.number.int(),
+      ESIC: "Yes",
+      EPF: "Yes",
+      Detailsofbranches: `${faker.location.city()}, ${faker.location.city()}`,
+      Memberofanyother: "Yes",
+      association_name: faker.company.name(),
+      is_office_bearer: "No",
+      association_position: "",
+      reason_for_joining_chamber: "Networking and Business Opportunities",
+      e_sign: null,
+      IncomeandExpenditure: null,
+      incometaxtpan: null,
+      FactoryRegistrationCertificate: null,
+      MemorandumArticleofAssociation: null,
+      GSTINRegistrationCopy: null,
+      IECodeCertificate: null,
+      ProfessionalCertificate: null,
+      CopyofLandDocument: null,
+      LandHolding: null,
+      passportsizephoto: null,
+      DirectorsPartners: null,
+      form_status: "pending",
+      Reasonforrejection: "",
+    };
+  };
+  
+
+  const [formData, setFormData] = useState(generateFakeData());
 
   const [legalInfo, setLegalInfo] = "Your legal information here.";
 
@@ -216,11 +225,13 @@ const Membershipform = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log(formData)
+    setFormData(generateFakeData())
     try {
       e.preventDefault();
 
       const response = await axios.post(
-        "http://192.168.137.1:8000/membershipform/",
+        "http://192.168.169.77:8000/membershipform/",
         formData,
         {
           headers: {
@@ -229,7 +240,7 @@ const Membershipform = () => {
         }
       );
       console.log(response);
-      navigate("/adminhome");
+      // navigate("/adminhome");
     } catch (error) {
       console.log(error);
     }
@@ -315,7 +326,7 @@ const Membershipform = () => {
                     name={label.toLowerCase().replace(/\s/g, "")}
                     checked={
                       formData.constitution[
-                      label.toLowerCase().replace(/\s/g, "")
+                        label.toLowerCase().replace(/\s/g, "")
                       ]
                     }
                     onChange={handleConstitutionChange}

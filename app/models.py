@@ -55,13 +55,13 @@ class Form(models.Model):
     Addressforcommunication_office = models.TextField("Office Address for Communication", blank=True, null=True)
     Addressforcommunication_work = models.TextField("Work Address for Communication", blank=True, null=True)
     
-    Communicationdetails_landline = models.CharField("Landline Number", max_length=20, blank=True, null=True)
-    Communicationdetails_mobile = models.CharField("Mobile Number", max_length=20, blank=True, null=True)
-    Communicationdetails_email = models.EmailField("Email Address", blank=True, null=True)
-    Communicationdetails_web = models.URLField("Website URL", max_length=200, blank=True, null=True)
+    Communicationdetails_landline = models.CharField("Landline Number", max_length=20, blank=True, null=True,unique=True)
+    Communicationdetails_mobile = models.CharField("Mobile Number", max_length=20, blank=True, null=True,unique=True)
+    Communicationdetails_email = models.EmailField("Email Address", blank=True, null=True, unique=True)
+    Communicationdetails_web = models.URLField("Website URL", max_length=200, blank=True, null=True,unique=True)
     
-    Legalinfo_aadhar = models.CharField("Aadhar Number", max_length=12, blank=True, null=True)
-    Legalinfo_pancard = models.CharField("PAN Card Number", max_length=10, blank=True, null=True)
+    Legalinfo_aadhar = models.CharField("Aadhar Number", max_length=12, blank=True, null=True,unique=True)
+    Legalinfo_pancard = models.CharField("PAN Card Number", max_length=10, blank=True, null=True,unique=True)
     Legalinfo_GSTNo = models.CharField("GST Number", max_length=15, blank=True, null=True)
     Legalinfo_CompanyFirmRegNo = models.CharField("Company/Firm Registration Number", max_length=15, blank=True, null=True)
     Legalinfo_SocietyAssociationRegNo = models.CharField("Society/Association Registration Number", max_length=15, blank=True, null=True)
@@ -152,8 +152,7 @@ class Form(models.Model):
         ("payment done (approved as Member)", "Payment Done (Approved as Member)"), 
         ("rejected", "Rejected"),
     ]
-    form_status = models.CharField("Form Status", choices=form_status_options, max_length=50, default="pending")
-    
+    form_status = models.CharField("Form Status", choices=form_status_options, max_length=50, default="pending",null=True)
     approved_by = models.ManyToManyField(AdminUser, related_name="approved_forms", blank=True)
     rejected_by = models.ManyToManyField(AdminUser, related_name="rejected_forms", blank=True)
     Reasonforrejection = models.TextField("Reason for Rejection", null=True, blank=True, default=None)

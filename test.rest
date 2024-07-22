@@ -1,0 +1,15 @@
+POST http://localhost:8000/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "titan",
+    "password": "1234567890"
+}
+
+
+###
+
+GET http://localhost:8000/approval/ HTTP/1.1
+Authorization: "Token 9b64152177b76758496f6e95504cd7d1588b6b27"
+Content-Type: application/json
+

@@ -13,6 +13,8 @@ urlpatterns = [
     path('formdetails/<int:pk>/', form_detail, name='Form Detail'),
     path('getform/', Get_form_details, name='Get Form Details'),
     path("approval/", views.getApproval, name="Approval"),
+    path("update/",views.update_form,name="Update Form"),
+    path("existinglogin/",views.existingLogin,name = "Existign Login"),
 ]
  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,39 +1,38 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import icci from "../../Assets/icci.jpg";
 import axios from "axios";
-import Cookies from "js-cookie";
 
 const LoginAdmin = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-  const csrf = Cookies.get("csrftoken");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData(e.target);
     const username = formData.get("username");
     const password = formData.get("password");
 
     try {
-      const response = await axios.post("http://192.168.169.82:8000/login/", {
+      const response = await axios.post("http://192.168.169.77:8000/login/", {
         username,
         password,
-      }, {
-        headers:{
-          "X-CSRFToken": csrf,
-        },
-        withCredentials: true,
       });
 
-      if (response.data['message']==="Login successful") {
-        navigate("/now");
-      }
-      else {
+      if (response.status === 200) {
+        const token = response.data["token"];
+        localStorage.setItem("token", token);
+        console.log("Token ", token);
+        navigate("/adminhome");
+      } else {
         setError("Invalid username or password");
       }
     } catch (error) {
       setError("Invalid username or password");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -85,7 +84,7 @@ const LoginAdmin = () => {
                 />
               </div>
             </div>
-
+            {error && <div className="text-red-500 text-sm">{error}</div>}
             <div>
               <button
                 type="submit"
