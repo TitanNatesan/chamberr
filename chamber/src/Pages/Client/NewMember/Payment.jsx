@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const MembershipPrices = {
@@ -74,7 +73,6 @@ const Payment = () => {
     }));
   };
 
-  const [formData2, setFormData2] = useState();
   const accessToken = localStorage.getItem("token");
 
   console.log(accessToken);

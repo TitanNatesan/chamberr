@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../Assets/Formheader.png";
-import icci from "../../../Assets/Formheader.png";
 import axios from "axios";
 
 const Formexisting = () => {
@@ -19,73 +18,22 @@ const Formexisting = () => {
     setIsYesChecked(event.target.checked);
   };
 
-  const [formData, setFormData] = useState({
-    NameofApplicant: "John Doe",
-    constitution: "Individual",
-    profession1: "Software Developer",
-    YearofEstablishment: "2010",
-    Businessactivity: "Software Development and Consulting",
-    Registerofficeaddress: "1234 Software St, Tech City",
-    Addressforcommunication_office: "1234 Software St, Tech City",
-    Addressforcommunication_work: "5678 Development Ave, Tech Park",
-    Communicationdetails_landline: "123-456-7890",
-    Communicationdetails_mobile: "098-765-4321",
-    Communicationdetails_email: "contact@techcompany.com",
-    Communicationdetails_web: "https://www.techcompany.com",
-    Legalinfo_aadhar: "123456789101",
-    Legalinfo_pancard: "ABCDE1234F",
-    Legalinfo_GSTNo: "22AAAAA0000A1Z5",
-    Legalinfo_CompanyFirmRegNo: "C12345678901234",
-    Legalinfo_SocietyAssociationRegNo: "12345678901234",
-    Personauthorized_Name: "Jane Doe",
-    Personauthorized_Designation: "CTO",
-    personauthorized_pan: "BCDEA1234G",
-    personauthorized_aadhar: "432167890123",
-    personauthorized_phone: "098-765-4321",
-    personauthorized_email: "jane.doe@techcompany.com",
-    Maincategory: "IT and Software",
-    Subcategory: "Software Development",
-    Cateringtomarket: "Global",
-    Percentageofimports: "10%",
-    Percentageofexports: "50%",
-    Foreigncollaboration_country: "USA",
-    Foreigncollaboration_collaborator: "GlobalTech Inc",
-    Classificationofindustry: "Large",
-    Annualturnover_year1: "10",
-    Annualturnover_year2: "1200000",
-    Annualturnover_year3: "150",
-    Noofpersonsemployed_direct: "50",
-    Noofpersonsemployed_works: "200",
-    Noofpersonsemployed_indirect: "100",
-    Noofpersonsemployed_outsourced: "30",
-    ESIC: "Yes",
-    EPF: "Yes",
-    Detailsofbranches: "Tech City, Tech Park",
-    Memberofanyother: "Yes",
-    association_name: "Tech Industry Association",
-    is_office_bearer: "No",
-    association_position: "",
-    reason_for_joining_chamber: "Networking and Business Opportunities",
-    e_sign: null,
-    IncomeandExpenditure: null,
-    incometaxtpan: null,
-    FactoryRegistrationCertificate: null,
-    MemorandumArticleofAssociation: null,
-    GSTINRegistrationCopy: null,
-    IECodeCertificate: null,
-    ProfessionalCertificate: null,
-    CopyofLandDocument: null,
-    LandHolding: null,
-    passportsizephoto: null,
-    DirectorsPartners: null,
-    form_status: "pending",
-    Reasonforrejection: "",
-  });
+  const [formData, setFormData] = useState(JSON.parse(localStorage.getItem("formdata")))
 
   const [legalInfo, setLegalInfo] = "Your legal information here.";
+  useEffect(() => {
+    const storedData = localStorage.getItem("formData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setFormData((prevState) => ({
+        ...prevState,
+        ...parsedData,
+      }));
+    }
+  }, []);
 
   const labels = [
-    "Proprietary Firm",
+    "Proprietory Firm",
     "Partnership Firm LLP",
     "Private Limited",
     "Public Limited Unlisted",
@@ -94,7 +42,9 @@ const Formexisting = () => {
     "Society",
     "Associations",
   ];
-
+  useEffect(() => {
+    localStorage.setItem("formdata", JSON.stringify(formData));
+  }, [formData]);
   const [documentOptions, setDocOpt] = useState([
     {
       name: "Income Tax PAN Number",
@@ -220,9 +170,9 @@ const Formexisting = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-
-      const response = await axios.post(
-        "http://192.168.169.77:8000/membershipform/",
+      console.log(formData)
+      const response = await axios.put(
+        "http://192.168.137.1:8000/existinglogin/",
         formData,
         {
           headers: {
@@ -233,7 +183,7 @@ const Formexisting = () => {
       console.log(response);
       navigate("/adminhome");
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
     }
   };
 
@@ -250,7 +200,7 @@ const Formexisting = () => {
               <input
                 type="text"
                 value={currentDate}
-                readOnly
+
                 className="border outline-none rounded px-2 flex-grow"
               />
             </div>
@@ -262,8 +212,10 @@ const Formexisting = () => {
               <input
                 type="text"
                 name="applicantName"
-                value={formData.applicantName}
+                value={formData.NameofApplicant || ""}
                 onChange={handleInputChange}
+
+
                 className="border rounded px-2 flex-grow"
               />
             </div>
@@ -278,13 +230,13 @@ const Formexisting = () => {
                   <input
                     type="checkbox"
                     name="individual"
-                    checked={formData.constitution.individual}
+                    checked={formData.constitution==="individual"}
                     onChange={handleConstitutionChange}
                     className="form-checkbox"
                   />
                 </div>
               </div>
-              {formData.constitution.individual && (
+              {formData.constitution==="individual" && (
                 <div className="ml-[8.5rem] mb-4">
                   <label className="font-semibold mb-2 block">
                     Describe the profession:
@@ -297,7 +249,7 @@ const Formexisting = () => {
                       <span>{index + 1}</span>
                       <input
                         type="text"
-                        value={formData.profession[index]}
+                        value={formData.profession1[index]}
                         onChange={(e) =>
                           handleProfessionChange(index, e.target.value)
                         }
@@ -314,12 +266,8 @@ const Formexisting = () => {
                   </label>
                   <input
                     type="checkbox"
-                    name={label.toLowerCase().replace(/\s/g, "")}
-                    checked={
-                      formData.constitution[
-                        label.toLowerCase().replace(/\s/g, "")
-                      ]
-                    }
+                    name={label}
+                    checked={formData.constitution===label}
                     onChange={handleConstitutionChange}
                     className="form-checkbox ml-2"
                   />
@@ -334,12 +282,14 @@ const Formexisting = () => {
               <input
                 type="number"
                 name="establishmentYear"
-                value={formData.establishmentYear}
+                value={formData.YearofEstablishment}
                 onChange={handleInputChange}
                 className="border px-2 flex-grow"
                 min={1900}
                 max={currentYear}
                 placeholder="Year"
+
+
               />
             </div>
 
@@ -350,9 +300,11 @@ const Formexisting = () => {
                 </h6>
                 <textarea
                   name="businessActivity"
-                  value={formData.businessActivity}
+                  value={formData.Businessactivity}
                   onChange={handleInputChange}
                   className="border border-black flex-grow h-20"
+
+
                 ></textarea>
               </div>
               <div className="flex items-center">
@@ -361,8 +313,10 @@ const Formexisting = () => {
                 </h6>
                 <textarea
                   name="registeredOfficeAddress"
-                  value={formData.registeredOfficeAddress}
+                  value={formData.Registerofficeaddress}
                   onChange={handleInputChange}
+
+
                   className="border border-black flex-grow h-20"
                 ></textarea>
               </div>
@@ -372,8 +326,9 @@ const Formexisting = () => {
                 </h6>
                 <textarea
                   name="officeAddress"
-                  value={formData.officeAddress}
+                  value={formData.Addressforcommunication_office}
                   onChange={handleInputChange}
+
                   className="border border-black flex-grow h-20"
                 ></textarea>
               </div>
@@ -383,7 +338,7 @@ const Formexisting = () => {
                 </h6>
                 <textarea
                   name="worksFactoryAddress"
-                  value={formData.worksFactoryAddress}
+                  value={formData.Addressforcommunication_work}
                   onChange={handleInputChange}
                   className="border border-black flex-grow h-20"
                 ></textarea>
@@ -400,9 +355,11 @@ const Formexisting = () => {
                   <input
                     type="text"
                     name="phoneLandline"
-                    value={formData.phoneLandline}
+                    value={formData.Communicationdetails_landline}
                     onChange={handleInputChange}
                     className="border border-black flex-grow"
+
+
                   />
                 </div>
                 <div className="flex items-center">
@@ -410,8 +367,10 @@ const Formexisting = () => {
                   <input
                     type="text"
                     name="phoneMobile"
-                    value={formData.phoneMobile}
+                    value={formData.Communicationdetails_mobile}
                     onChange={handleInputChange}
+
+
                     className="border border-black flex-grow"
                   />
                 </div>
@@ -420,8 +379,10 @@ const Formexisting = () => {
                   <input
                     type="email"
                     name="email"
-                    value={formData.email}
+                    value={formData.Communicationdetails_email}
                     onChange={handleInputChange}
+
+
                     className="border border-black flex-grow"
                   />
                 </div>
@@ -430,8 +391,10 @@ const Formexisting = () => {
                   <input
                     type="text"
                     name="website"
-                    value={formData.website}
+                    value={formData.Communicationdetails_web}
                     onChange={handleInputChange}
+
+
                     className="border border-black flex-grow"
                   />
                 </div>
@@ -447,7 +410,9 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="aadhaarCardNo"
-                  value={legalInfo.aadhaarCardNo}
+                  value={formData.Legalinfo_aadhar}
+
+
                   onChange={handleLegalInfoChange}
                   className="w-full border rounded px-2 py-1"
                 />
@@ -457,7 +422,9 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="panCardNo"
-                  value={legalInfo.panCardNo}
+                  value={formData.Legalinfo_pancard}
+
+
                   onChange={handleLegalInfoChange}
                   className="w-full border rounded px-2 py-1"
                 />
@@ -467,8 +434,10 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="gstNo"
-                  value={legalInfo.gstNo}
+                  value={formData.Legalinfo_GSTNo}
                   onChange={handleLegalInfoChange}
+
+
                   className="w-full border rounded px-2 py-1"
                 />
               </div>
@@ -479,7 +448,9 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="companyRegistrationNo"
-                  value={legalInfo.companyRegistrationNo}
+                  value={formData.Legalinfo_CompanyFirmRegNo}
+
+
                   onChange={handleLegalInfoChange}
                   className="w-full border rounded px-2 py-1"
                 />
@@ -491,8 +462,10 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="societyRegistrationNo"
-                  value={legalInfo.societyRegistrationNo}
+                  value={formData.Legalinfo_SocietyAssociationRegNo}
                   onChange={handleLegalInfoChange}
+
+
                   className="w-full border rounded px-2 py-1"
                 />
               </div>
@@ -521,6 +494,8 @@ const Formexisting = () => {
                         onChange={(e) =>
                           handleDirectorChange(index, "name", e.target.value)
                         }
+
+
                         className="w-full border-b-2 outline-none border-blue-700 border-dotted  rounded py-1"
                       />
                     </td>
@@ -535,6 +510,8 @@ const Formexisting = () => {
                             e.target.value
                           )
                         }
+
+
                         className="w-full border-b-2 outline-none border-blue-700 border-dotted  rounded  py-1"
                       />
                     </td>
@@ -545,6 +522,8 @@ const Formexisting = () => {
                         onChange={(e) =>
                           handleDirectorChange(index, "pan", e.target.value)
                         }
+
+
                         className="w-full border-b-2 outline-none border-blue-700 border-dotted  rounded py-1"
                       />
                     </td>
@@ -562,8 +541,10 @@ const Formexisting = () => {
                 <h6 className="w-64 text-right pr-4">Name:</h6>
                 <input
                   type="text"
+
+
                   name="name"
-                  value={formData.name}
+                  value={formData.Personauthorized_Name}
                   onChange={handleInputChange}
                   className="border-b outline-none border-black  w-64"
                 />
@@ -572,8 +553,10 @@ const Formexisting = () => {
                 <h6 className="w-64 text-right pr-4">Designation:</h6>
                 <input
                   type="text"
+
+
                   name="designation"
-                  value={formData.designation}
+                  value={formData.Personauthorized_Designation}
                   onChange={handleInputChange}
                   className="border-b outline-none border-black  w-64"
                 />
@@ -582,9 +565,12 @@ const Formexisting = () => {
                 <h6 className="w-64 text-right pr-4">PAN:</h6>
                 <input
                   type="text"
+
+
                   name="pan"
-                  value={formData.pan}
+                  value={formData.personauthorized_pan}
                   onChange={handleInputChange}
+
                   className="border-b outline-none border-black  w-64"
                 />
               </div>
@@ -592,9 +578,12 @@ const Formexisting = () => {
                 <h6 className="w-64 text-right pr-4">Aadhaar:</h6>
                 <input
                   type="text"
+
                   name="aadhaar"
-                  value={formData.aadhaar}
+                  value={formData.personauthorized_aadhar}
                   onChange={handleInputChange}
+
+
                   className="border-b outline-none border-black  w-64"
                 />
               </div>
@@ -603,7 +592,7 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="phone"
-                  value={formData.phone}
+                  value={formData.personauthorized_phone}
                   onChange={handleInputChange}
                   className="border-b outline-none border-black  w-64"
                 />
@@ -613,8 +602,10 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="mailId"
-                  value={formData.mailId}
+                  value={formData.personauthorized_email}
                   onChange={handleInputChange}
+
+
                   className="border-b outline-none border-black  w-64"
                 />
               </div>
@@ -631,7 +622,9 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="mainCategory"
-                  value={formData.mainCategory}
+                  value={formData.Maincategory}
+
+
                   onChange={handleInputChange}
                   className="px-2 border-b outline-none border-black w-64"
                 />
@@ -641,7 +634,7 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="subCategory"
-                  value={formData.subCategory}
+                  value={formData.Subcategory}
                   onChange={handleInputChange}
                   className="px-2 border-b outline-none border-black w-64"
                 />
@@ -659,7 +652,9 @@ const Formexisting = () => {
                 <input
                   type="checkbox"
                   name="domestic"
-                  checked={formData.domestic}
+
+
+                  checked={formData.Cateringtomarket}
                   onChange={handleInputChange}
                   className="px-2 border-b border-black w-64"
                 />
@@ -669,7 +664,7 @@ const Formexisting = () => {
                 <input
                   type="checkbox"
                   name="global"
-                  checked={formData.global}
+                  checked={formData.Percentageofimports}
                   onChange={handleInputChange}
                   className="px-2 border-b border-black w-64"
                 />
@@ -681,6 +676,8 @@ const Formexisting = () => {
                   name="both"
                   checked={formData.both}
                   onChange={handleInputChange}
+
+
                   className="px-2 border-b border-black w-64"
                 />
               </div>
@@ -690,7 +687,9 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="percentExports"
-                  value={formData.percentExports}
+                  value={formData.Percentageofexports}
+
+
                   onChange={handleInputChange}
                   className="px-2 border-b border-black w-64"
                 />
@@ -702,6 +701,8 @@ const Formexisting = () => {
                   name="percentImports"
                   value={formData.percentImports}
                   onChange={handleInputChange}
+
+
                   className="px-2 border-b border-black w-64"
                 />
               </div>
@@ -716,9 +717,10 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="countryName"
-                  value={formData.countryName}
+                  value={formData.Foreigncollaboration_country}
                   onChange={handleInputChange}
                   className="px-2 border-b border-black w-64"
+
                 />
               </div>
               <div className="flex items-center">
@@ -728,7 +730,7 @@ const Formexisting = () => {
                 <input
                   type="text"
                   name="collaboratorName"
-                  value={formData.collaboratorName}
+                  value={formData.Foreigncollaboration_collaborator}
                   onChange={handleInputChange}
                   className="px-2 border-b border-black w-64"
                 />
@@ -744,7 +746,7 @@ const Formexisting = () => {
                 <input
                   type="checkbox"
                   name="large"
-                  checked={formData.large}
+                  checked={formData.Classificationofindustry}
                   onChange={handleInputChange}
                   className="ml-2"
                 />
@@ -791,6 +793,7 @@ const Formexisting = () => {
                 <h6>1st Year</h6>
                 <input
                   type="text"
+                  value={formData.Annualturnover_year1}
                   className="border-b-4 outline-none border-blue-700 border-dotted "
                 />
               </div>
@@ -798,6 +801,7 @@ const Formexisting = () => {
                 <h6>2nd Year</h6>
                 <input
                   type="text"
+                  value={formData.Annualturnover_year2}
                   className="border-b-4 outline-none border-blue-700 border-dotted "
                 />
               </div>
@@ -805,6 +809,7 @@ const Formexisting = () => {
                 <h6>3rd Year</h6>
                 <input
                   type="text"
+                  value={formData.Annualturnover_year3}
                   className="border-b-4 outline-none border-blue-700 border-dotted "
                 />
               </div>
@@ -821,6 +826,7 @@ const Formexisting = () => {
                   <h6 className="w-32 text-right pr-2">Direct - Office:</h6>
                   <input
                     type="text"
+                    value={formData.Noofpersonsemployed_direct}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -828,6 +834,7 @@ const Formexisting = () => {
                   <h6 className="w-32 text-right pr-2">Works:</h6>
                   <input
                     type="text"
+                    value={formData.Noofpersonsemployed_works}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -837,6 +844,7 @@ const Formexisting = () => {
                   </h6>
                   <input
                     type="text"
+                    value={formData.Noofpersonsemployed_indirect}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -844,6 +852,7 @@ const Formexisting = () => {
                   <h6 className="w-32 text-right pr-2">Outsourced:</h6>
                   <input
                     type="text"
+                    value={formData.Noofpersonsemployed_outsourced}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -857,6 +866,9 @@ const Formexisting = () => {
                   <h6 className="w-32 text-right pr-2">ESIC:</h6>
                   <input
                     type="text"
+                    value={formData.ESIC}
+
+
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -864,6 +876,9 @@ const Formexisting = () => {
                   <h6 className="w-32 text-right pr-2">EPF:</h6>
                   <input
                     type="text"
+                    value={formData.EPF}
+
+
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -874,7 +889,12 @@ const Formexisting = () => {
               <h6 className="w-64 text-right pr-4">
                 18. Details of branches / Outlet outside India:
               </h6>
-              <textarea className="border border-black w-64 h-20"></textarea>
+              <textarea
+                value={formData.Detailsofbranches}
+
+
+                className="border border-black w-64 h-20"
+              ></textarea>
             </div>
 
             <div className="flex-col items-center justify-center">
@@ -886,6 +906,7 @@ const Formexisting = () => {
                   <input
                     type="checkbox"
                     className="mr-2"
+                    value={formData.Memberofanyother}
                     id="YES"
                     checked={isMember}
                     onChange={handleCheckboxChange}
@@ -926,7 +947,10 @@ const Formexisting = () => {
                   <div className="flex items-center">
                     <input
                       type="checkbox"
+                      value={formData.is_office_bearer}
                       className="mr-2"
+
+
                       checked={isYesChecked}
                       onChange={handleYesChange}
                     />
@@ -960,6 +984,7 @@ const Formexisting = () => {
             <textarea
               name=""
               id=""
+              value={formData.reason_for_joining_chamber}
               className="border-black border ml-4"
             ></textarea>
           </div>
@@ -1049,6 +1074,8 @@ const Formexisting = () => {
               <input
                 type="file"
                 name="directorsList"
+
+
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 onChange={handleFileChange}
               />

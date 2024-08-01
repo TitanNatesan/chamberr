@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import icci from "../../Assets/icci.jpg";
 import axios from "axios";
 
-const LoginAdmin = () => {
+const   LoginAdmin = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ const LoginAdmin = () => {
     const password = formData.get("password");
 
     try {
-      const response = await axios.post("http://192.168.169.77:8000/login/", {
+      const response = await axios.post("http://192.168.137.1:8000/login/", {
         username,
         password,
       });

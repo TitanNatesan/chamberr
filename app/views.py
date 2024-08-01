@@ -213,6 +213,7 @@ def existingLogin(request):
         try:
             form = Form.objects.get(Communicationdetails_email=email, Legalinfo_aadhar=aadhar)
             serial = FormSerializer(form)
+            print(serial.data)
             return Response(serial.data)
         except Form.DoesNotExist:
             return Response("Invalid Crediantials")
@@ -222,8 +223,9 @@ def existingLogin(request):
         except Form.DoesNotExist:
             return Response("Form not found", status=status.HTTP_404_NOT_FOUND)
         
-        serializer = FormSerializer(form, data=request.data, partial=True)  # Use partial=True to allow partial updates
+        serializer = FormSerializer(form, data=request.data)  # Use partial=True to allow partial updates
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

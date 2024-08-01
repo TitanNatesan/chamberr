@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { Button, Modal } from "@mantine/core";
+import axios from "axios";
 import { IconEye } from "@tabler/icons-react";
 
 const toReadableHeader = (key) => {
@@ -21,18 +22,8 @@ const Allmembers = () => {
       const token = localStorage.getItem("token");
 
       try {
-        const response = await fetch(
-          "http://192.168.169.77:8000/membershipform/",
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-
-        const jsonData = await response.json();
-        setData(jsonData);
-        console.log(jsonData);
+        const response = await axios.get('http://192.168.137.1:8000/membershipform/')
+        setData(response.data)
       } catch (error) {
         console.error(error);
       }

@@ -1,17 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../Assets/Formheader.png";
-import icci from "../../../Assets/Formheader.png";
 import axios from "axios";
-import { faker } from '@faker-js/faker';
-
 
 const Membershipform = () => {
   const navigate = useNavigate();
   const currentDate = new Date().toLocaleDateString();
   const currentYear = new Date().getFullYear();
-  const [checkedItems, setCheckedItems] = useState({});
-  const [files, setFiles] = useState({});
   const [image, setImage] = useState(null);
   const [isMember, setIsMember] = useState(false);
   const [isYesChecked, setIsYesChecked] = useState(false);
@@ -21,73 +16,68 @@ const Membershipform = () => {
     setIsYesChecked(event.target.checked);
   };
 
-  const generateFakeData = () => {
-    return {
-      NameofApplicant: faker.person.fullName(),
-      constitution: "Individual",
-      profession1: faker.person.jobTitle(),
-      YearofEstablishment: faker.date.past().getFullYear().toString(), // last 20 years
-      Businessactivity: faker.company.catchPhrase(),
-      Registerofficeaddress: faker.location.streetAddress(),
-      Addressforcommunication_office: faker.location.streetAddress(),
-      Addressforcommunication_work: faker.location.streetAddress(),
-      Communicationdetails_landline: faker.phone.number(),
-      Communicationdetails_mobile: faker.phone.number("+91##########"),
-      Communicationdetails_email: faker.internet.email(),
-      Communicationdetails_web: faker.internet.url(),
-      Legalinfo_aadhar: faker.string.alphanumeric(12),
-      Legalinfo_pancard: faker.string.alphanumeric(10).toUpperCase(),
-      Legalinfo_GSTNo: faker.string.alphanumeric(15).toUpperCase(),
-      Legalinfo_CompanyFirmRegNo: faker.string.alphanumeric(15),
-      Legalinfo_SocietyAssociationRegNo: faker.string.alphanumeric(15),
-      Personauthorized_Name: faker.person.fullName(),
-      Personauthorized_Designation: faker.person.jobTitle(),
-      personauthorized_pan: faker.string.alphanumeric(10).toUpperCase(),
-      personauthorized_aadhar: faker.string.alphanumeric(12),
-      personauthorized_phone: faker.phone.number("+91##########"),
-      personauthorized_email: faker.internet.email(),
-      Maincategory: "IT and Software",
-      Subcategory: "Software Development",
-      Cateringtomarket: "Global",
-      Percentageofimports: "10%",
-      Percentageofexports: "50%",
-      Foreigncollaboration_country: faker.location.country(),
-      Foreigncollaboration_collaborator: faker.company.name(),
-      Classificationofindustry: "Large",
-      Annualturnover_year1: faker.finance.amount(),
-      Annualturnover_year2: faker.finance.amount(),
-      Annualturnover_year3: faker.finance.amount(),
-      Noofpersonsemployed_direct: faker.number.int(),
-      Noofpersonsemployed_works: faker.number.int(),
-      Noofpersonsemployed_indirect: faker.number.int(),
-      Noofpersonsemployed_outsourced: faker.number.int(),
-      ESIC: "Yes",
-      EPF: "Yes",
-      Detailsofbranches: `${faker.location.city()}, ${faker.location.city()}`,
-      Memberofanyother: "Yes",
-      association_name: faker.company.name(),
-      is_office_bearer: "No",
-      association_position: "",
-      reason_for_joining_chamber: "Networking and Business Opportunities",
-      e_sign: null,
-      IncomeandExpenditure: null,
-      incometaxtpan: null,
-      FactoryRegistrationCertificate: null,
-      MemorandumArticleofAssociation: null,
-      GSTINRegistrationCopy: null,
-      IECodeCertificate: null,
-      ProfessionalCertificate: null,
-      CopyofLandDocument: null,
-      LandHolding: null,
-      passportsizephoto: null,
-      DirectorsPartners: null,
-      form_status: "pending",
-      Reasonforrejection: "",
-    };
-  };
-  
-
-  const [formData, setFormData] = useState(generateFakeData());
+  const [formData, setFormData] = useState({
+    NameofApplicant: "",
+    constitution: "",
+    profession: ["", "", ""],
+    YearofEstablishment: "",
+    Businessactivity: "",
+    Registerofficeaddress: "",
+    Addressforcommunication_office: "",
+    Addressforcommunication_work: "",
+    Communicationdetails_landline: "",
+    Communicationdetails_mobile: "",
+    Communicationdetails_email: "",
+    Communicationdetails_web: "",
+    Legalinfo_aadhar: "",
+    Legalinfo_pancard: "",
+    Legalinfo_GSTNo: "",
+    Legalinfo_CompanyFirmRegNo: "",
+    Legalinfo_SocietyAssociationRegNo: "",
+    Personauthorized_Name: "",
+    Personauthorized_Designation: "",
+    personauthorized_pan: "",
+    personauthorized_aadhar: "",
+    personauthorized_phone: "",
+    personauthorized_email: "",
+    Maincategory: "",
+    Subcategory: "",
+    Cateringtomarket: "",
+    Percentageofimports: "",
+    Percentageofexports: "",
+    Foreigncollaboration_country: "",
+    Foreigncollaboration_collaborator: "",
+    Classificationofindustry: "",
+    Annualturnover_year1: "",
+    Annualturnover_year2: "",
+    Annualturnover_year3: "",
+    Noofpersonsemployed_direct: "",
+    Noofpersonsemployed_works: "",
+    Noofpersonsemployed_indirect: "",
+    Noofpersonsemployed_outsourced: "",
+    ESIC: "",
+    EPF: "",
+    Detailsofbranches: "",
+    Memberofanyother: "",
+    association_name: "",
+    is_office_bearer: "",
+    association_position: "",
+    reason_for_joining_chamber: "",
+    e_sign: null,
+    IncomeandExpenditure: null,
+    incometaxtpan: null,
+    FactoryRegistrationCertificate: null,
+    MemorandumArticleofAssociation: null,
+    GSTINRegistrationCopy: null,
+    IECodeCertificate: null,
+    ProfessionalCertificate: null,
+    CopyofLandDocument: null,
+    LandHolding: null,
+    passportsizephoto: null,
+    DirectorsPartners: null,
+    form_status: "pending",
+    Reasonforrejection: "",
+  });
 
   const [legalInfo, setLegalInfo] = "Your legal information here.";
 
@@ -203,11 +193,19 @@ const Membershipform = () => {
   };
 
   const handleConstitutionChange = (e) => {
-    const { name, checked } = e.target;
-    setFormData({
-      ...formData,
-      constitution: { ...formData.constitution, [name]: checked },
-    });
+    const { value, checked } = e.target; // Use 'value' instead of 'checked'
+    if (!checked) {
+      setFormData({
+        ...formData,
+        constitution: "",
+      })
+    }
+    else {
+      setFormData({
+        ...formData,
+        constitution: value, // Update constitution with value
+      });
+    }
   };
 
   const handleLegalInfoChange = (e) => {
@@ -225,13 +223,11 @@ const Membershipform = () => {
   };
 
   const handleSubmit = async (e) => {
-    console.log(formData)
-    setFormData(generateFakeData())
     try {
       e.preventDefault();
 
       const response = await axios.post(
-        "http://192.168.169.77:8000/membershipform/",
+        "http://192.168.137.1:8000/membershipform/",
         formData,
         {
           headers: {
@@ -240,7 +236,7 @@ const Membershipform = () => {
         }
       );
       console.log(response);
-      // navigate("/adminhome");
+      navigate("/adminhome");
     } catch (error) {
       console.log(error);
     }
@@ -286,14 +282,15 @@ const Membershipform = () => {
                   <span className="ml-2 font-semibold">Individual</span>
                   <input
                     type="checkbox"
-                    name="individual"
-                    checked={formData.constitution.individual}
+                    value="individual"
+                    name="constitution"
+                    checked={formData.constitution === "individual"}
                     onChange={handleConstitutionChange}
                     className="form-checkbox"
                   />
                 </div>
               </div>
-              {formData.constitution.individual && (
+              {formData.constitution && formData.constitution === 'individual' && (
                 <div className="ml-[8.5rem] mb-4">
                   <label className="font-semibold mb-2 block">
                     Describe the profession:
@@ -323,10 +320,11 @@ const Membershipform = () => {
                   </label>
                   <input
                     type="checkbox"
-                    name={label.toLowerCase().replace(/\s/g, "")}
+                    name="constitution"
+                    value={label.toLowerCase().replace(/\s/g, "")}
                     checked={
                       formData.constitution[
-                        label.toLowerCase().replace(/\s/g, "")
+                      label.toLowerCase().replace(/\s/g, "")
                       ]
                     }
                     onChange={handleConstitutionChange}
@@ -1046,7 +1044,7 @@ const Membershipform = () => {
                 type="file"
                 name="passportsizephoto"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                multiple
+                multiplep
                 onChange={handleFileChange}
               />
             </div>
