@@ -8,18 +8,13 @@ const Membershipform = () => {
   const currentDate = new Date().toLocaleDateString();
   const currentYear = new Date().getFullYear();
   const [image, setImage] = useState(null);
-  const [isMember, setIsMember] = useState(false);
-  const [isYesChecked, setIsYesChecked] = useState(false);
-  const [directors, setDirectors] = useState([]);
-
-  const handleYesChange = (event) => {
-    setIsYesChecked(event.target.checked);
-  };
 
   const [formData, setFormData] = useState({
     NameofApplicant: "",
     constitution: "",
-    profession: ["", "", ""],
+    profession1: "",
+    profession2: "",
+    profession3: "",
     YearofEstablishment: "",
     Businessactivity: "",
     Registerofficeaddress: "",
@@ -78,8 +73,6 @@ const Membershipform = () => {
     form_status: "pending",
     Reasonforrejection: "",
   });
-
-  const [legalInfo, setLegalInfo] = "Your legal information here.";
 
   const labels = [
     "Proprietary Firm",
@@ -171,12 +164,6 @@ const Membershipform = () => {
     }));
   };
 
-  const handleProfessionChange = (index, value) => {
-    const newProfession = [...formData.profession];
-    newProfession[index] = value;
-    setFormData({ ...formData, profession: newProfession });
-  };
-
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -208,26 +195,12 @@ const Membershipform = () => {
     }
   };
 
-  const handleLegalInfoChange = (e) => {
-    const { name, value } = e.target;
-    setLegalInfo((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleDirectorChange = (index, field, value) => {
-    const newDirectors = [...directors];
-    newDirectors[index][field] = value;
-    setDirectors(newDirectors);
-  };
-
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
 
       const response = await axios.post(
-        "http://192.168.137.1:8000/membershipform/",
+        "http://192.168.188.144:8000/membershipform/",
         formData,
         {
           headers: {
@@ -239,6 +212,7 @@ const Membershipform = () => {
       navigate("/adminhome");
     } catch (error) {
       console.log(error);
+      console.log(error.response.data)
     }
   };
 
@@ -266,8 +240,8 @@ const Membershipform = () => {
               </h6>
               <input
                 type="text"
-                name="applicantName"
-                value={formData.applicantName}
+                name="NameofApplicant"
+                value={formData.NameofApplicant}
                 onChange={handleInputChange}
                 className="border rounded px-2 flex-grow"
               />
@@ -282,35 +256,49 @@ const Membershipform = () => {
                   <span className="ml-2 font-semibold">Individual</span>
                   <input
                     type="checkbox"
-                    value="individual"
+                    value="Individual"
                     name="constitution"
-                    checked={formData.constitution === "individual"}
+                    checked={formData.constitution === "Individual"}
                     onChange={handleConstitutionChange}
                     className="form-checkbox"
                   />
                 </div>
               </div>
-              {formData.constitution && formData.constitution === 'individual' && (
+              {formData.constitution && formData.constitution === 'Individual' && (
                 <div className="ml-[8.5rem] mb-4">
                   <label className="font-semibold mb-2 block">
                     Describe the profession:
                   </label>
-                  {[0, 1, 2].map((index) => (
-                    <div
-                      className="flex items-center space-x-3 mb-1"
-                      key={index}
-                    >
-                      <span>{index + 1}</span>
+                    <div className="flex items-center space-x-3 mb-1">
+                      <span>1</span>
                       <input
                         type="text"
-                        value={formData.profession[index]}
-                        onChange={(e) =>
-                          handleProfessionChange(index, e.target.value)
-                        }
+                        name="profession1"
+                        value={formData.profession1}
+                        onChange={handleInputChange}
                         className="border rounded border-black flex-grow"
                       />
                     </div>
-                  ))}
+                    <div className="flex items-center space-x-3 mb-1">
+                      <span>2</span>
+                      <input
+                        type="text"
+                        name="profession2"
+                        value={formData.profession2}
+                        onChange={handleInputChange}
+                        className="border rounded border-black flex-grow"
+                      />
+                    </div>
+                    <div className="flex items-center space-x-3 mb-1">
+                      <span>3</span>
+                      <input
+                        type="text"
+                        name="profession3"
+                        value={formData.profession3}
+                        onChange={handleInputChange}
+                        className="border rounded border-black flex-grow"
+                      />
+                    </div>
                 </div>
               )}
               {labels.map((label, index) => (
@@ -321,12 +309,9 @@ const Membershipform = () => {
                   <input
                     type="checkbox"
                     name="constitution"
-                    value={label.toLowerCase().replace(/\s/g, "")}
+                    value={label}
                     checked={
-                      formData.constitution[
-                      label.toLowerCase().replace(/\s/g, "")
-                      ]
-                    }
+                      formData.constitution===label}
                     onChange={handleConstitutionChange}
                     className="form-checkbox ml-2"
                   />
@@ -340,8 +325,8 @@ const Membershipform = () => {
               </h6>
               <input
                 type="number"
-                name="establishmentYear"
-                value={formData.establishmentYear}
+                name="YearofEstablishment"
+                value={formData.YearofEstablishment}
                 onChange={handleInputChange}
                 className="border px-2 flex-grow"
                 min={1900}
@@ -356,8 +341,8 @@ const Membershipform = () => {
                   4. Business Activity:
                 </h6>
                 <textarea
-                  name="businessActivity"
-                  value={formData.businessActivity}
+                  name="Businessactivity"
+                  value={formData.Businessactivity}
                   onChange={handleInputChange}
                   className="border border-black flex-grow h-20"
                 ></textarea>
@@ -367,8 +352,8 @@ const Membershipform = () => {
                   5. Registered Office Address:
                 </h6>
                 <textarea
-                  name="registeredOfficeAddress"
-                  value={formData.registeredOfficeAddress}
+                  name="Registerofficeaddress"
+                  value={formData.Registerofficeaddress}
                   onChange={handleInputChange}
                   className="border border-black flex-grow h-20"
                 ></textarea>
@@ -378,8 +363,8 @@ const Membershipform = () => {
                   6. Address for Communication - Office:
                 </h6>
                 <textarea
-                  name="officeAddress"
-                  value={formData.officeAddress}
+                  name="Addressforcommunication_office"
+                  value={formData.Addressforcommunication_office}
                   onChange={handleInputChange}
                   className="border border-black flex-grow h-20"
                 ></textarea>
@@ -389,8 +374,8 @@ const Membershipform = () => {
                   Works/Factory:
                 </h6>
                 <textarea
-                  name="worksFactoryAddress"
-                  value={formData.worksFactoryAddress}
+                  name="Addressforcommunication_work"
+                  value={formData.Addressforcommunication_work}
                   onChange={handleInputChange}
                   className="border border-black flex-grow h-20"
                 ></textarea>
@@ -406,8 +391,8 @@ const Membershipform = () => {
                   <h6 className="w-64 text-right pr-4">Phone Landline:</h6>
                   <input
                     type="text"
-                    name="phoneLandline"
-                    value={formData.phoneLandline}
+                    name="Communicationdetails_landline"
+                    value={formData.Communicationdetails_landline}
                     onChange={handleInputChange}
                     className="border border-black flex-grow"
                   />
@@ -416,8 +401,8 @@ const Membershipform = () => {
                   <h6 className="w-64 text-right pr-4">Phone Mobile:</h6>
                   <input
                     type="text"
-                    name="phoneMobile"
-                    value={formData.phoneMobile}
+                    name="Communicationdetails_mobile"
+                    value={formData.Communicationdetails_mobile}
                     onChange={handleInputChange}
                     className="border border-black flex-grow"
                   />
@@ -426,8 +411,8 @@ const Membershipform = () => {
                   <h6 className="w-64 text-right pr-4">Email ID:</h6>
                   <input
                     type="email"
-                    name="email"
-                    value={formData.email}
+                    name="Communicationdetails_email"
+                    value={formData.Communicationdetails_email}
                     onChange={handleInputChange}
                     className="border border-black flex-grow"
                   />
@@ -436,8 +421,8 @@ const Membershipform = () => {
                   <h6 className="w-64 text-right pr-4">Website:</h6>
                   <input
                     type="text"
-                    name="website"
-                    value={formData.website}
+                    name="Communicationdetails_web"
+                    value={formData.Communicationdetails_web}
                     onChange={handleInputChange}
                     className="border border-black flex-grow"
                   />
@@ -453,9 +438,9 @@ const Membershipform = () => {
                 <label className="block mb-1">Aadhaar Card No</label>
                 <input
                   type="text"
-                  name="aadhaarCardNo"
-                  value={legalInfo.aadhaarCardNo}
-                  onChange={handleLegalInfoChange}
+                  name="Legalinfo_aadhar"
+                  value={formData.Legalinfo_aadhar}
+                  onChange={handleInputChange}
                   className="w-full border rounded px-2 py-1"
                 />
               </div>
@@ -463,9 +448,9 @@ const Membershipform = () => {
                 <label className="block mb-1">PAN Card No</label>
                 <input
                   type="text"
-                  name="panCardNo"
-                  value={legalInfo.panCardNo}
-                  onChange={handleLegalInfoChange}
+                  name="Legalinfo_pancard"
+                  value={formData.Legalinfo_pancard}
+                  onChange={handleInputChange}
                   className="w-full border rounded px-2 py-1"
                 />
               </div>
@@ -473,9 +458,9 @@ const Membershipform = () => {
                 <label className="block mb-1">GST No</label>
                 <input
                   type="text"
-                  name="gstNo"
-                  value={legalInfo.gstNo}
-                  onChange={handleLegalInfoChange}
+                  name="Legalinfo_GSTNo"
+                  value={formData.Legalinfo_GSTNo}
+                  onChange={handleInputChange}
                   className="w-full border rounded px-2 py-1"
                 />
               </div>
@@ -485,9 +470,9 @@ const Membershipform = () => {
                 </label>
                 <input
                   type="text"
-                  name="companyRegistrationNo"
-                  value={legalInfo.companyRegistrationNo}
-                  onChange={handleLegalInfoChange}
+                  name="Legalinfo_CompanyFirmRegNo"
+                  value={formData.Legalinfo_CompanyFirmRegNo}
+                  onChange={handleInputChange}
                   className="w-full border rounded px-2 py-1"
                 />
               </div>
@@ -497,15 +482,15 @@ const Membershipform = () => {
                 </label>
                 <input
                   type="text"
-                  name="societyRegistrationNo"
-                  value={legalInfo.societyRegistrationNo}
-                  onChange={handleLegalInfoChange}
+                  name="Legalinfo_SocietyAssociationRegNo"
+                  value={formData.Legalinfo_SocietyAssociationRegNo}
+                  onChange={handleInputChange}
                   className="w-full border rounded px-2 py-1"
                 />
               </div>
             </div>
 
-            <h2 className="text-xl font-bold mb-4">
+            {/* <h2 className="text-xl font-bold mb-4">
               9. List of Directors/ Partners/ Office Bearers/ Trustees:
             </h2>
             <table className="w-ful">
@@ -558,7 +543,8 @@ const Membershipform = () => {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table> */}
+            
           </div>
           <div className="flex flex-col space-y-5 font-bold">
             <div>
@@ -569,8 +555,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Name:</h6>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="Personauthorized_Name"
+                  value={formData.Personauthorized_Name}
                   onChange={handleInputChange}
                   className="border-b outline-none border-black  w-64"
                 />
@@ -579,8 +565,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Designation:</h6>
                 <input
                   type="text"
-                  name="designation"
-                  value={formData.designation}
+                  name="Personauthorized_Designation"
+                  value={formData.Personauthorized_Designation}
                   onChange={handleInputChange}
                   className="border-b outline-none border-black  w-64"
                 />
@@ -589,8 +575,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">PAN:</h6>
                 <input
                   type="text"
-                  name="pan"
-                  value={formData.pan}
+                  name="personauthorized_pan"
+                  value={formData.personauthorized_pan}
                   onChange={handleInputChange}
                   className="border-b outline-none border-black  w-64"
                 />
@@ -599,8 +585,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Aadhaar:</h6>
                 <input
                   type="text"
-                  name="aadhaar"
-                  value={formData.aadhaar}
+                  name="personauthorized_aadhar"
+                  value={formData.personauthorized_aadhar}
                   onChange={handleInputChange}
                   className="border-b outline-none border-black  w-64"
                 />
@@ -609,8 +595,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Phone:</h6>
                 <input
                   type="text"
-                  name="phone"
-                  value={formData.phone}
+                  name="personauthorized_phone"
+                  value={formData.personauthorized_phone}
                   onChange={handleInputChange}
                   className="border-b outline-none border-black  w-64"
                 />
@@ -619,8 +605,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Mail Id:</h6>
                 <input
                   type="text"
-                  name="mailId"
-                  value={formData.mailId}
+                  name="personauthorized_email"
+                  value={formData.personauthorized_email}
                   onChange={handleInputChange}
                   className="border-b outline-none border-black  w-64"
                 />
@@ -637,8 +623,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Main Category:</h6>
                 <input
                   type="text"
-                  name="mainCategory"
-                  value={formData.mainCategory}
+                  name="Maincategory"
+                  value={formData.Maincategory}
                   onChange={handleInputChange}
                   className="px-2 border-b outline-none border-black w-64"
                 />
@@ -647,8 +633,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Sub Category:</h6>
                 <input
                   type="text"
-                  name="subCategory"
-                  value={formData.subCategory}
+                  name="Subcategory"
+                  value={formData.Subcategory}
                   onChange={handleInputChange}
                   className="px-2 border-b outline-none border-black w-64"
                 />
@@ -665,9 +651,14 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Domestic:</h6>
                 <input
                   type="checkbox"
-                  name="domestic"
-                  checked={formData.domestic}
-                  onChange={handleInputChange}
+                  name="Cateringtomarket"
+                  checked={formData.Cateringtomarket==="Domestic"}
+                  onChange={()=>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      ["Cateringtomarket"]: "Domestic",
+                    }))
+                  }
                   className="px-2 border-b border-black w-64"
                 />
               </div>
@@ -675,9 +666,14 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Global:</h6>
                 <input
                   type="checkbox"
-                  name="global"
-                  checked={formData.global}
-                  onChange={handleInputChange}
+                  name="Cateringtomarket"
+                  checked={formData.Cateringtomarket==="Global"}
+                  onChange={()=>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      ["Cateringtomarket"]: "Global",
+                    }))
+                  }
                   className="px-2 border-b border-black w-64"
                 />
               </div>
@@ -685,9 +681,14 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Both:</h6>
                 <input
                   type="checkbox"
-                  name="both"
-                  checked={formData.both}
-                  onChange={handleInputChange}
+                  name="Cateringtomarket"
+                  checked={formData.Cateringtomarket==="Both"}
+                  onChange={()=>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      ["Cateringtomarket"]: "Both",
+                    }))
+                  }
                   className="px-2 border-b border-black w-64"
                 />
               </div>
@@ -696,8 +697,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">% of Exports:</h6>
                 <input
                   type="text"
-                  name="percentExports"
-                  value={formData.percentExports}
+                  name="Percentageofexports"
+                  value={formData.Percentageofexports}
                   onChange={handleInputChange}
                   className="px-2 border-b border-black w-64"
                 />
@@ -706,8 +707,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">% of Imports:</h6>
                 <input
                   type="text"
-                  name="percentImports"
-                  value={formData.percentImports}
+                  name="Percentageofimports"
+                  value={formData.Percentageofimports}
                   onChange={handleInputChange}
                   className="px-2 border-b border-black w-64"
                 />
@@ -722,8 +723,8 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Name of the Country:</h6>
                 <input
                   type="text"
-                  name="countryName"
-                  value={formData.countryName}
+                  name="Foreigncollaboration_country"
+                  value={formData.Foreigncollaboration_country}
                   onChange={handleInputChange}
                   className="px-2 border-b border-black w-64"
                 />
@@ -734,8 +735,8 @@ const Membershipform = () => {
                 </h6>
                 <input
                   type="text"
-                  name="collaboratorName"
-                  value={formData.collaboratorName}
+                  name="Foreigncollaboration_collaborator"
+                  value={formData.Foreigncollaboration_collaborator}
                   onChange={handleInputChange}
                   className="px-2 border-b border-black w-64"
                 />
@@ -750,9 +751,14 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Large:</h6>
                 <input
                   type="checkbox"
-                  name="large"
-                  checked={formData.large}
-                  onChange={handleInputChange}
+                  name="Classificationofindustry"
+                  checked={formData.Classificationofindustry==="Large" }
+                  onChange={()=>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      ["Classificationofindustry"]: "Large",
+                    }))
+                  }
                   className="ml-2"
                 />
               </div>
@@ -760,9 +766,14 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Medium:</h6>
                 <input
                   type="checkbox"
-                  name="medium"
-                  checked={formData.medium}
-                  onChange={handleInputChange}
+                  name="Classificationofindustry"
+                  checked={formData.Classificationofindustry==="Medium"}
+                  onChange={()=>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      ["Classificationofindustry"]: "Medium",
+                    }))
+                  }
                   className="ml-2"
                 />
               </div>
@@ -770,9 +781,14 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Small:</h6>
                 <input
                   type="checkbox"
-                  name="small"
-                  checked={formData.small}
-                  onChange={handleInputChange}
+                  name="Classificationofindustry"
+                  checked={formData.Classificationofindustry==="Small"}
+                  onChange={()=>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      ["Classificationofindustry"]: "Small",
+                    }))
+                  }
                   className="ml-2"
                 />
               </div>
@@ -780,9 +796,14 @@ const Membershipform = () => {
                 <h6 className="w-64 text-right pr-4">Micro:</h6>
                 <input
                   type="checkbox"
-                  name="micro"
-                  checked={formData.micro}
-                  onChange={handleInputChange}
+                  name="Classificationofindustry"
+                  checked={formData.Classificationofindustry==="Micro"}
+                  onChange={()=>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      ["Cateringtomarket"]: "Micro",
+                    }))
+                  }
                   className="ml-2"
                 />
               </div>
@@ -798,6 +819,9 @@ const Membershipform = () => {
                 <h6>1st Year</h6>
                 <input
                   type="text"
+                  name="Annualturnover_year1"
+                  value={formData.Annualturnover_year1}
+                  onChange={handleInputChange}
                   className="border-b-4 outline-none border-blue-700 border-dotted "
                 />
               </div>
@@ -805,6 +829,9 @@ const Membershipform = () => {
                 <h6>2nd Year</h6>
                 <input
                   type="text"
+                  value={formData.Annualturnover_year2}
+                  onChange={handleInputChange}
+                  name="Annualturnover_year2"
                   className="border-b-4 outline-none border-blue-700 border-dotted "
                 />
               </div>
@@ -812,6 +839,9 @@ const Membershipform = () => {
                 <h6>3rd Year</h6>
                 <input
                   type="text"
+                  value={formData.Annualturnover_year3}
+                  onChange={handleInputChange}
+                  name="Annualturnover_year3"
                   className="border-b-4 outline-none border-blue-700 border-dotted "
                 />
               </div>
@@ -828,6 +858,9 @@ const Membershipform = () => {
                   <h6 className="w-32 text-right pr-2">Direct - Office:</h6>
                   <input
                     type="text"
+                    name="Noofpersonsemployed_direct"
+                    value={formData.Noofpersonsemployed_direct}
+                    onChange={handleInputChange}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -835,6 +868,9 @@ const Membershipform = () => {
                   <h6 className="w-32 text-right pr-2">Works:</h6>
                   <input
                     type="text"
+                    name="Noofpersonsemployed_works"
+                    value={formData.Noofpersonsemployed_works}
+                    onChange={handleInputChange}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -844,6 +880,9 @@ const Membershipform = () => {
                   </h6>
                   <input
                     type="text"
+                    name="Noofpersonsemployed_indirect"
+                    value={formData.Noofpersonsemployed_indirect}
+                    onChange={handleInputChange}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -851,6 +890,9 @@ const Membershipform = () => {
                   <h6 className="w-32 text-right pr-2">Outsourced:</h6>
                   <input
                     type="text"
+                    name="Noofpersonsemployed_outsourced"
+                    value={formData.Noofpersonsemployed_outsourced}
+                    onChange={handleInputChange}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -864,6 +906,9 @@ const Membershipform = () => {
                   <h6 className="w-32 text-right pr-2">ESIC:</h6>
                   <input
                     type="text"
+                    name="ESIC"
+                    value={formData.ESIC}
+                    onChange={handleInputChange}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -871,6 +916,9 @@ const Membershipform = () => {
                   <h6 className="w-32 text-right pr-2">EPF:</h6>
                   <input
                     type="text"
+                    onChange={handleInputChange}
+                    name="EPF"
+                    value={formData.EPF}
                     className="border-black outline-none rounded px-2 border w-40"
                   />
                 </div>
@@ -881,7 +929,11 @@ const Membershipform = () => {
               <h6 className="w-64 text-right pr-4">
                 18. Details of branches / Outlet outside India:
               </h6>
-              <textarea className="border border-black w-64 h-20"></textarea>
+              <textarea 
+              name="Detailsofbranches"
+              value={formData.Detailsofbranches}
+              onChange={handleInputChange}
+              className="border border-black w-64 h-20"></textarea>
             </div>
 
             <div className="flex-col items-center justify-center">
@@ -891,32 +943,48 @@ const Membershipform = () => {
               <div className="flex items-center space-x-7">
                 <div className="flex items-center">
                   <input
+                  id="YES"
                     type="checkbox"
                     className="mr-2"
-                    id="YES"
-                    checked={isMember}
-                    onChange={handleCheckboxChange}
+                    name="Memberofanyother"
+                    value="Yes"
+                    checked={formData.Memberofanyother==="Yes"}
+                    onChange={()=>
+                      setFormData((prevState) => ({
+                        ...prevState,
+                        ["Memberofanyother"]: "Yes",
+                      }))
+                    }
                   />
                   <label htmlFor="YES">YES</label>
                 </div>
                 <div className="flex items-center">
                   <input
+                  id="NO"
                     type="checkbox"
                     className="mr-2"
-                    id="NO"
-                    checked={!isMember}
-                    onChange={() => setIsMember(false)}
+                    name="Memberofanyother"
+                    value='No'
+                    checked={formData.Memberofanyother==="No"}
+                    onChange={()=>
+                      setFormData((prevState) => ({
+                        ...prevState,
+                        ["Memberofanyother"]: "No",
+                      }))
+                    }
                   />
                   <label htmlFor="NO">NO</label>
                 </div>
               </div>
-              {isMember && (
+              {formData.Memberofanyother==="Yes" && (
                 <div className="flex items-start mt-4">
                   <h6 className="w-64 text-right pr-4">
-                    If yes, mention details:
+                    If yes, mention Association Name:
                   </h6>
                   <textarea
-                    name="associationDetails"
+                    name="association_name"
+                    value={formData.association_name}
+                    onChange={handleInputChange}
                     className="px-2 border border-black w-64"
                     rows="4"
                   ></textarea>
@@ -927,15 +995,21 @@ const Membershipform = () => {
             <div className="flex-row items-start">
               <div className="flex">
                 <h6 className="w-64 text-right pr-4">
-                  20. Do you hold any Office Bearers position in any Association
+                  20. Do you hold any Office Bearers position in that Association
                 </h6>
                 <div className="flex items-center space-x-7">
                   <div className="flex items-center">
                     <input
                       type="checkbox"
                       className="mr-2"
-                      checked={isYesChecked}
-                      onChange={handleYesChange}
+                      name="is_office_bearer"
+                      checked={formData.is_office_bearer==="Yes"}
+                      onChange={()=>
+                        setFormData((prevState) => ({
+                          ...prevState,
+                          ["is_office_bearer"]: "Yes",
+                        }))
+                      }
                     />
                     <label htmlFor="YES">YES</label>
                   </div>
@@ -943,20 +1017,30 @@ const Membershipform = () => {
                     <input
                       type="checkbox"
                       className="mr-2"
-                      checked={!isYesChecked}
-                      onChange={handleYesChange}
+                      name="is_office_bearer"
+                      checked={formData.is_office_bearer==="No"}
+                      onChange={()=>
+                        setFormData((prevState) => ({
+                          ...prevState,
+                          ["is_office_bearer"]: "No",
+                        }))
+                      }
                     />
                     <label htmlFor="NO">NO</label>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col space-y-3"></div>
-              {isYesChecked && (
+              {formData.is_office_bearer==="Yes" && (
                 <div className="flex items-start">
                   <h6 className="w-64 text-right pr-4">
-                    If yes - mention the Association Name & position:
+                    If yes - mention the position in that association:
                   </h6>
-                  <textarea className="border border-black w-64 h-20"></textarea>
+                  <textarea 
+                  name="association_position"
+                  value={formData.association_position}
+                  onChange={handleInputChange}
+                  className="border border-black w-64 h-20"></textarea>
                 </div>
               )}
             </div>
@@ -965,8 +1049,9 @@ const Membershipform = () => {
           <div className="flex font-bold">
             <h6> 21. Reason for Joining Chamber :</h6>
             <textarea
-              name=""
-              id=""
+              name="reason_for_joining_chamber"
+              value={formData.reason_for_joining_chamber}
+              onChange={handleInputChange}
               className="border-black border ml-4"
             ></textarea>
           </div>
@@ -1055,7 +1140,7 @@ const Membershipform = () => {
               </label>
               <input
                 type="file"
-                name="directorsList"
+                name="DirectorsPartners"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 onChange={handleFileChange}
               />

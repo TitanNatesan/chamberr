@@ -15,7 +15,7 @@ const ApprovalPage = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://192.168.137.1:8000/approval/",
+        "http://192.168.188.144:8000/approval/",
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -45,7 +45,7 @@ const ApprovalPage = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://192.168.137.1:8000/approval/",
+        "http://192.168.188.144:8000/approval/",
         { fid, status: "accepted" },
         {
           headers: {
@@ -65,7 +65,7 @@ const ApprovalPage = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://192.168.137.1:8000/approval/",
+        "http://192.168.188.144:8000/approval/",
         { fid, reason },
         {
           headers: {

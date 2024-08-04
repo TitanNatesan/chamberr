@@ -11,7 +11,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://192.168.137.1:8000/existinglogin/",
+        "http://192.168.188.144:8000/existinglogin/",
         {
           email,
           aadhar,
@@ -19,8 +19,13 @@ const Login = () => {
       );
       console.log(response.data);
       localStorage.clear();
-      localStorage.setItem('formdata', JSON.stringify(response.data));
-      navigate("/formexisting");
+      if (response.data==="Invalid Crediantials"){
+        setError("Invalid Crediantials")
+      }
+      else{
+        localStorage.setItem('formdata', JSON.stringify(response.data));
+        navigate("/formexisting");
+      }
     } catch (error) {
       setError("Invalid username or password");
     }
@@ -33,6 +38,7 @@ const Login = () => {
           <h2 className="mt-10 text-center text-2xl  font-bold leading-9 tracking-tight text-gray-900">
             Log in to your account
           </h2>
+          <h2>{error}</h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

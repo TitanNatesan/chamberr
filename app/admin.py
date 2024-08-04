@@ -15,4 +15,44 @@ class AdminUserAdmin(admin.ModelAdmin):
 class FormAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Form._meta.fields]
     
+    actions = [
+        "setIndividual",
+        "setProprietoryFirm",
+        "setPartnershipFirmLLP",
+        "setPrivateLimited",
+        "setPublicLimitedUnlisted",
+        "setPublicLimitedListed",
+        "setTrust",
+        "setSociety",
+        "setAssociations",
+    ]
+    
+    def setIndividual(self,request,queryset):
+        queryset.update(constitution="Individual")
+    
+    def setProprietoryFirm(self,request,queryset):
+        queryset.update(constitution="Proprietory Firm")
+    
+    def setPartnershipFirmLLP(self,request,queryset):
+        queryset.update(constitution="Partnership Firm LLP")
+        
+    def setPrivateLimited(self,request,queryset):
+        queryset.update(constitution="Private Limited")
+    
+    def setPublicLimitedUnlisted(self,request,queryset):
+        queryset.update(constitution="Public Limited Unlisted")
+    
+    def setPublicLimitedListed(self,request,queryset):
+        queryset.update(constitution="Public Limited Listed")
+        
+    def setTrust(self,request,queryset):
+        queryset.update(constitution="Trust")
+        
+    def setSociety(self,request,queryset):
+        queryset.update(constitution="Society")
+        
+    def setAssociations(self,request,queryset):
+        queryset.update(constitution="Associations")
+        
+    
 admin.site.register(AdminUser, AdminUserAdmin)

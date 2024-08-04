@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import authenticate, login, logout
-from .serializers import AdminUserSerializer, FormSerializer
+from .serializers import AdminUserSerializer, FormSerializer,UpFormSerializer
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 
 
@@ -213,19 +213,21 @@ def existingLogin(request):
         try:
             form = Form.objects.get(Communicationdetails_email=email, Legalinfo_aadhar=aadhar)
             serial = FormSerializer(form)
-            print(serial.data)
+            print("Login Success")
             return Response(serial.data)
         except Form.DoesNotExist:
             return Response("Invalid Crediantials")
     if request.method == "PUT":
+        print(request.data)
         try:
             form = Form.objects.get(pk=request.data.get('id'))
         except Form.DoesNotExist:
             return Response("Form not found", status=status.HTTP_404_NOT_FOUND)
         
-        serializer = FormSerializer(form, data=request.data)  # Use partial=True to allow partial updates
+        serializer = UpFormSerializer(form, data=request.data)  
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        print(serializer.errors)
+        else:
+            print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

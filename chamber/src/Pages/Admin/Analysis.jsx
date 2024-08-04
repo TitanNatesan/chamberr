@@ -33,7 +33,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://192.168.137.1:8000/membershipform/")
+      .get("http://192.168.188.144:8000/membershipform/")
       .then((response) => {
         console.log("API response:", response.data); // Debugging log
         setFormData(response.data);

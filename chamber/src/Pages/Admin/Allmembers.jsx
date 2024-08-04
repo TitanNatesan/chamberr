@@ -22,7 +22,7 @@ const Allmembers = () => {
       const token = localStorage.getItem("token");
 
       try {
-        const response = await axios.get('http://192.168.137.1:8000/membershipform/')
+        const response = await axios.get('http://192.168.188.144:8000/membershipform/')
         setData(response.data)
       } catch (error) {
         console.error(error);
